@@ -1,0 +1,33 @@
+# the assembler should be able to skip a comment on its own line too
+(LOOP)
+@24576
+D=M		# load the KBD value into D
+@5
+D;JEQ		# if 0, jump to WRITE
+D=-1		# else load the "blacken" command into D
+
+(CLEAR)
+@16
+M=D		# store KBD value (either 0 or -1) in a new variable
+@16384
+D=A		# load SCREEN address into D
+@17
+M=D		# store it as a new variable
+
+(WRITE)
+@17
+D=M		# load the current address
+@24576
+D=D-A		# subtract the KBD address from the current address
+@0
+D;JGE		# if negative, jump back to LOOP
+@16 
+D=M		# else load the kbdval back into D,
+@17
+A=M		# load the current address into A,
+M=D		# and write kbdval into it
+D=A+1		# load the next address into D
+@17
+M=D		# write the next address into fill
+@11
+0;JMP		# run the WRITE loop again
